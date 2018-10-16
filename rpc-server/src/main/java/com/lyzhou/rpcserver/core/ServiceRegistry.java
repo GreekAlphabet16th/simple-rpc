@@ -58,6 +58,7 @@ public class ServiceRegistry {
     private void createNode(ZooKeeper zk, String data){
         try {
             byte[] bytes = data.getBytes();
+            //zookeeper不能直接创建子节点
             if(zk.exists(Constant.ZK_REGISTRY_PATH, false) == null){
                 zk.create(Constant.ZK_REGISTRY_PATH, "".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
             }
