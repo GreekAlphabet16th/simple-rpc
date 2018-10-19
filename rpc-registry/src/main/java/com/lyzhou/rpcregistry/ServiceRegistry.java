@@ -1,7 +1,7 @@
-package com.lyzhou.rpcserver.core;
+package com.lyzhou.rpcregistry;
 
-import com.lyzhou.rpccommon.domain.Constant;
 import org.apache.zookeeper.*;
+import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +26,7 @@ public class ServiceRegistry {
         if(data != null){
             ZooKeeper zk = connectServer();
             if(zk != null){
+                addRootNode(zk);//判断是否有根节点，不能直接创建子节点
                 createNode(zk, data);
             }
         }
@@ -51,6 +52,21 @@ public class ServiceRegistry {
     }
 
     /**
+     * 创建根节点
+     * @param zk
+     * */
+    private void addRootNode(ZooKeeper zk){
+        try {
+            Stat stat = zk.exists(Constant.ZK_REGISTRY_PATH, false);
+            if(null == stat){
+                zk.create(Constant.ZK_REGISTRY_PATH, new byte[0], ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+                LOGGER.debug("create zookeeper root node)");
+            }
+        } catch (KeeperException | InterruptedException e) {
+            LOGGER.error("", e);
+        }
+    }
+    /**
      * 创建数据存储节点
      * @param zk
      * @param data
@@ -58,10 +74,6 @@ public class ServiceRegistry {
     private void createNode(ZooKeeper zk, String data){
         try {
             byte[] bytes = data.getBytes();
-            //zookeeper不能直接创建子节点
-            if(zk.exists(Constant.ZK_REGISTRY_PATH, false) == null){
-                zk.create(Constant.ZK_REGISTRY_PATH, "".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-            }
             String path = zk.create(Constant.ZK_DATA_PATH, bytes, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
             LOGGER.debug("create zookeeper node ({} => {})", path, data);
         } catch (KeeperException | InterruptedException e) {

@@ -1,4 +1,4 @@
-package com.lyzhou.rpccommon.domain;
+package com.lyzhou.rpccommon.protocol;
 
 import java.util.Arrays;
 

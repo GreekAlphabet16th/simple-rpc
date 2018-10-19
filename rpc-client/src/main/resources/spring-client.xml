@@ -6,7 +6,7 @@
 
     <context:property-placeholder location="classpath:client-config.properties"/>
 
-    <bean id="serviceDiscovery" class="com.lyzhou.rpcclient.ServiceDiscovery">
+    <bean id="serviceDiscovery" class="com.lyzhou.rpcregistry.ServiceDiscovery">
         <constructor-arg name="registryAddress" value="${registry.address}"></constructor-arg>
     </bean>
     <bean id="rpcProxy" class="com.lyzhou.rpcclient.RpcProxy">

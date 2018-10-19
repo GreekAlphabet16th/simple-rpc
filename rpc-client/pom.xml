@@ -3,24 +3,31 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<name>rpc-client</name>
-	<description>Demo project for Spring Boot</description>
+    <parent>
+        <groupId>com.lizhou</groupId>
+        <artifactId>simple-rpc</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
 
-	<parent>
-		<groupId>com.lizhou</groupId>
-		<artifactId>simple-rpc</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
+    <artifactId>rpc-client</artifactId>
+    <name>rpc-client</name>
+	<description>The client module of simple-rpc project</description>
 
-	<artifactId>rpc-client</artifactId>
 
 	<dependencies>
-		<dependency>
+
+        <dependency>
 			<groupId>com.lizhou</groupId>
 			<artifactId>rpc-common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+
+        <dependency>
+            <groupId>com.lizhou</groupId>
+            <artifactId>rpc-registry</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
 		<!-- JUnit -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -49,39 +56,12 @@
 			<artifactId>netty-all</artifactId>
 		</dependency>
 
-		<!-- Protostuff -->
-		<dependency>
-			<groupId>com.dyuproject.protostuff</groupId>
-			<artifactId>protostuff-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.dyuproject.protostuff</groupId>
-			<artifactId>protostuff-runtime</artifactId>
-		</dependency>
-
-		<!-- ZooKeeper -->
-		<dependency>
-			<groupId>org.apache.zookeeper</groupId>
-			<artifactId>zookeeper</artifactId>
-		</dependency>
-
 		<!-- Apache Commons Collections -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
 		</dependency>
 
-		<!-- Objenesis -->
-		<dependency>
-			<groupId>org.objenesis</groupId>
-			<artifactId>objenesis</artifactId>
-		</dependency>
-
-		<!-- CGLib -->
-		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib</artifactId>
-		</dependency>
 	</dependencies>
 
 

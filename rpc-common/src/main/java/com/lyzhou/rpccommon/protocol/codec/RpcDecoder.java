@@ -1,4 +1,4 @@
-package com.lyzhou.rpccommon.codec;
+package com.lyzhou.rpccommon.protocol.codec;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

@@ -1,9 +1,10 @@
 package com.lyzhou.rpcserver.core;
 
-import com.lyzhou.rpccommon.codec.RpcDecoder;
-import com.lyzhou.rpccommon.codec.RpcEncoder;
-import com.lyzhou.rpccommon.domain.RpcRequest;
-import com.lyzhou.rpccommon.domain.RpcResponse;
+import com.lyzhou.rpccommon.protocol.codec.RpcDecoder;
+import com.lyzhou.rpccommon.protocol.codec.RpcEncoder;
+import com.lyzhou.rpccommon.protocol.RpcRequest;
+import com.lyzhou.rpccommon.protocol.RpcResponse;
+import com.lyzhou.rpcregistry.ServiceRegistry;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -12,6 +13,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import org.apache.commons.collections4.MapUtils;
@@ -25,6 +27,9 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * RPC服务实例
@@ -36,6 +41,7 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
 
     private String serverAddress;
     private ServiceRegistry serviceRegistry;
+    private static ThreadPoolExecutor threadPoolExecutor;
 
     //存放接口名和服务对象之间的映射
     private Map<String, Object> handlerMap = new HashMap<>();
@@ -64,9 +70,12 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel channel) throws Exception {
-                            channel.pipeline().addLast(new RpcDecoder(RpcRequest.class))
+                            channel.pipeline()
+                                    //半包处理
+                                    .addLast(new LengthFieldBasedFrameDecoder(65536, 0, 4, 0, 0))
+                                    .addLast(new RpcDecoder(RpcRequest.class))
                                     .addLast(new RpcEncoder(RpcResponse.class))
-                                    .addLast(new RpcHandler(handlerMap));//处理RPC请求
+                                    .addLast(new RpcServerHandler(handlerMap));
 
                         }
                     });
@@ -96,6 +105,18 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
             for (Object serviceBean : serviceBeanMap.values()) {
                 String interfaceName = serviceBean.getClass().getAnnotation(RpcService.class).value().getName();
                 handlerMap.put(interfaceName, serviceBean);
+            }
+        }
+    }
+
+
+    public static void asyncHandler(Runnable task){
+        if(threadPoolExecutor == null){
+            synchronized (RpcServer.class) {
+                if(threadPoolExecutor == null){
+                    threadPoolExecutor = new ThreadPoolExecutor(16, 16, 600L,
+                            TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(65536));
+                }
             }
         }
     }

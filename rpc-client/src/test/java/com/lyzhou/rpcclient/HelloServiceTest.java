@@ -1,5 +1,6 @@
 package com.lyzhou.rpcclient;
 
+import com.lyzhou.rpccommon.service.UserInfo;
 import com.lyzhou.rpccommon.service.HelloService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,5 +20,7 @@ public class HelloServiceTest {
         HelloService helloService = rpcProxy.create(HelloService.class);
         String result = helloService.hello("lyzhou");
         System.out.println(result);
+        UserInfo user = helloService.getUser(1L);
+        System.out.println(user);
     }
 }

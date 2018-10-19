@@ -1,4 +1,4 @@
-package com.lyzhou.rpccommon.codec;
+package com.lyzhou.rpccommon.protocol.codec;
 
 import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.ProtostuffIOUtil;
@@ -34,7 +34,7 @@ public class SerializationUtil {
     }
 
     /**
-     * 序列化
+     * 序列化（对象 -> 字节数组）
      * @param obj
      * @return  byte[]
      * */
@@ -52,7 +52,7 @@ public class SerializationUtil {
     }
 
     /**
-     * 返序列化
+     * 反序列化（字节数组 -> 对象）
      * @param data
      * @return  T
      * */

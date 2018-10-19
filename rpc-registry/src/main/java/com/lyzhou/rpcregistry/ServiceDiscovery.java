@@ -1,7 +1,5 @@
-package com.lyzhou.rpcclient;
+package com.lyzhou.rpcregistry;
 
-import com.lyzhou.rpccommon.domain.Constant;
-import io.netty.util.internal.ThreadLocalRandom;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
@@ -9,10 +7,12 @@ import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * zookeeper 实现服务发现管理
@@ -23,14 +23,17 @@ public class ServiceDiscovery {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceDiscovery.class);
 
     private CountDownLatch latch = new CountDownLatch(1);
+
     private String registryAddress;
+    private ZooKeeper zooKeeper;
+
     private volatile List<String> dataList = new ArrayList<>();
 
     public ServiceDiscovery(String registryAddress) {
         this.registryAddress = registryAddress;
-        ZooKeeper zk = connectServer();
-        if (zk != null) {
-            watchNode(zk);
+        zooKeeper = connectServer();
+        if (zooKeeper != null) {
+            watchNode(zooKeeper);
         }
 
     }
@@ -68,7 +71,7 @@ public class ServiceDiscovery {
             });
             latch.await();
         } catch (IOException | InterruptedException e) {
-            LOGGER.error("", e);
+            LOGGER.error(e.getMessage(), e);
         }
         return zk;
     }
@@ -79,7 +82,7 @@ public class ServiceDiscovery {
                 @Override
                 public void process(WatchedEvent event) {
                     if (event.getType() == Event.EventType.NodeChildrenChanged) {
-                        watchNode(zk);
+                        watchNode(zk); //服务治理，通过watch来监控子节点的变化
                     }
                 }
             });
@@ -91,7 +94,17 @@ public class ServiceDiscovery {
             LOGGER.debug("node data: {}", dataList);
             this.dataList = dataList;
         } catch (KeeperException | InterruptedException e) {
-            LOGGER.error("", e);
+            LOGGER.error(e.getMessage(), e);
+        }
+    }
+
+    public void stop(){
+        if(zooKeeper != null){
+            try {
+                zooKeeper.close();
+            } catch (InterruptedException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
     }
 }

@@ -3,29 +3,37 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<name>rpc-common</name>
-	<description>RPC通信公共包</description>
-
-	<parent>
-		<groupId>com.lizhou</groupId>
-		<artifactId>simple-rpc</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
+    <parent>
+        <groupId>com.lizhou</groupId>
+        <artifactId>simple-rpc</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
 
     <artifactId>rpc-common</artifactId>
+    <name>rpc-common</name>
+	<description>The common module of simple-rpc project</description>
+
 
 	<dependencies>
+
+        <!-- JUnit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+
 		<!-- SLF4J -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
+
 		<!-- Netty -->
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
 		</dependency>
+
 		<!-- Protostuff -->
 		<dependency>
 			<groupId>com.dyuproject.protostuff</groupId>
@@ -35,15 +43,11 @@
 			<groupId>com.dyuproject.protostuff</groupId>
 			<artifactId>protostuff-runtime</artifactId>
 		</dependency>
-		<!-- ZooKeeper -->
-		<dependency>
-			<groupId>org.apache.zookeeper</groupId>
-			<artifactId>zookeeper</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.objenesis</groupId>
 			<artifactId>objenesis</artifactId>
 		</dependency>
+
 	</dependencies>
 
 </project>

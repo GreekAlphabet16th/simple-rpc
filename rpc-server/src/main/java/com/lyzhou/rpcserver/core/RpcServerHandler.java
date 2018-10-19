@@ -1,7 +1,8 @@
 package com.lyzhou.rpcserver.core;
 
-import com.lyzhou.rpccommon.domain.RpcRequest;
-import com.lyzhou.rpccommon.domain.RpcResponse;
+import com.lyzhou.rpccommon.protocol.RpcRequest;
+import com.lyzhou.rpccommon.protocol.RpcResponse;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -17,17 +18,27 @@ import java.util.Map;
  * RPC消息处理
  * @author zhouliyu
  * */
-public class RpcHandler extends SimpleChannelInboundHandler<RpcRequest> {
+public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RpcHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RpcServerHandler.class);
     private final Map<String, Object> handlerMap;
 
-    public RpcHandler(Map<String, Object> handlerMap) {
+    public RpcServerHandler(Map<String, Object> handlerMap) {
         this.handlerMap = handlerMap;
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, RpcRequest request) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, final RpcRequest request) throws Exception {
+/*
+        //暂未处理*********
+        RpcServer.asyncHandler(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        });
+*/
+
         RpcResponse response = new RpcResponse();
         response.setRequestId(request.getRequestId());
         try {
@@ -35,9 +46,16 @@ public class RpcHandler extends SimpleChannelInboundHandler<RpcRequest> {
             response.setResult(result);
         } catch (Throwable t) {
             response.setError(t);
+            LOGGER.error("RPC Server handle request error",t);
         }
-        ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
-
+        ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE).addListener(
+                new ChannelFutureListener() {
+                    @Override
+                    public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                        LOGGER.debug("Send response for request " + request.getRequestId());
+                    }
+                }
+        );
     }
 
     @Override
@@ -55,8 +73,11 @@ public class RpcHandler extends SimpleChannelInboundHandler<RpcRequest> {
         Class<?>[] parameterTypes = request.getParameterTypes();
         Object[] parameters = request.getParameters();
 
+        //cglib reflect
         FastClass serviceFastClass = FastClass.create(serviceClass);
         FastMethod serviceFastMethod = serviceFastClass.getMethod(methodName, parameterTypes);
         return serviceFastMethod.invoke(serviceBean, parameters);
     }
+
+
 }

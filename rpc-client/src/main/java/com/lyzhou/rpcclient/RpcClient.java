@@ -1,9 +1,9 @@
 package com.lyzhou.rpcclient;
 
-import com.lyzhou.rpccommon.codec.RpcDecoder;
-import com.lyzhou.rpccommon.codec.RpcEncoder;
-import com.lyzhou.rpccommon.domain.RpcRequest;
-import com.lyzhou.rpccommon.domain.RpcResponse;
+import com.lyzhou.rpccommon.protocol.RpcRequest;
+import com.lyzhou.rpccommon.protocol.RpcResponse;
+import com.lyzhou.rpccommon.protocol.codec.RpcDecoder;
+import com.lyzhou.rpccommon.protocol.codec.RpcEncoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;

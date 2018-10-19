@@ -2,25 +2,31 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
-    <name>rpc-server</name>
-	<description>RPC通信服务端</description>
-
     <parent>
         <groupId>com.lizhou</groupId>
         <artifactId>simple-rpc</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>rpc-server</artifactId>
+    <packaging>jar</packaging>
+    <name>rpc-server</name>
+	<description>The server module of simple-rpc project</description>
 
 	<dependencies>
+
         <dependency>
             <groupId>com.lizhou</groupId>
             <artifactId>rpc-common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.lizhou</groupId>
+            <artifactId>rpc-registry</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
 		<!-- JUnit -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -49,32 +55,10 @@
 			<artifactId>netty-all</artifactId>
 		</dependency>
 
-		<!-- Protostuff -->
-		<dependency>
-			<groupId>com.dyuproject.protostuff</groupId>
-			<artifactId>protostuff-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.dyuproject.protostuff</groupId>
-			<artifactId>protostuff-runtime</artifactId>
-		</dependency>
-
-		<!-- ZooKeeper -->
-		<dependency>
-			<groupId>org.apache.zookeeper</groupId>
-			<artifactId>zookeeper</artifactId>
-		</dependency>
-
 		<!-- Apache Commons Collections -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
-		</dependency>
-
-		<!-- Objenesis -->
-		<dependency>
-			<groupId>org.objenesis</groupId>
-			<artifactId>objenesis</artifactId>
 		</dependency>
 
 		<!-- CGLib -->

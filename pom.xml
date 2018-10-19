@@ -9,7 +9,7 @@
 	<packaging>pom</packaging>
 
 	<name>simple-rpc</name>
-	<description>Demo project for Spring Boot</description>
+	<description>简单的RPC通信</description>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -21,6 +21,7 @@
 	<modules>
 		<module>rpc-server</module>
 		<module>rpc-common</module>
+		<module>rpc-registry</module>
 	</modules>
 
 
